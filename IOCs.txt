@@ -1,4 +1,4 @@
-## SRG IOCs
+# Silent Ransom Group (SRG) IOCs (2025 Verified)
 
 # Remote Access Tool Executables [1,3]
 AnyDesk.exe
