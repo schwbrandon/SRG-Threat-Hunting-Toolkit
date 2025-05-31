@@ -1,0 +1,47 @@
+# Silent Ransom Group (SRG) Threat Hunting - SPL Queries (2025 Verified)
+
+### IOC-Based Queries [1,2,3]
+
+# 1. Search for Remote Access Tools Execution and Related Services
+index=windows (EventID=1 OR EventCode=4688) 
+| search NewProcessName="*\\AnyDesk.exe" OR NewProcessName="*\\ZohoAssist*.exe" OR NewProcessName="*\\Splashtop*.exe" OR NewProcessName="*\\Syncro*.exe" OR NewProcessName="*\\AteraAgent*.exe" OR NewProcessName="*\\SuperOps*.exe"
+OR 
+index=wineventlog EventCode=7045 
+| search Service_Name="*AnyDesk*" OR Service_Name="*Zoho Assist*" OR Service_Name="*Atera*" OR Service_Name="*SuperOps*"
+| table _time, host, NewProcessName, Service_Name
+Purpose: Detect execution or service installation of RMM tools known to be used by SRG.
+
+# 2. Search for Data Exfiltration Tool Execution
+index=windows (EventID=1 OR EventCode=4688) 
+| search NewProcessName="*\\WinSCP.exe" OR NewProcessName="*\\rclone.exe"
+| table _time, host, NewProcessName
+Purpose: Detect execution of known data exfiltration tools.
+
+### IOC + TTP-Based Queries [1,2,3]
+
+# 3. Search for Phishing Emails Based on Known Domains and Brand Spoofing
+index=email (sender_domain="masterclasssupport.com" OR sender_domain="duolingoinvoice.com" OR sender_domain="myannualrenewal.com" OR sender_domain="usercharges.com" OR sender_domain="userpaymentsupport.com"
+OR sender_name="Duolingo" OR sender_name="MasterClass")
+| search NOT (sender_domain="duolingo.com" OR sender_domain="masterclass.com")
+| table _time, sender_email, sender_name, sender_domain, subject
+Purpose: Detect phishing emails either based on known SRG domains (IOC) or brand name spoofing (TTP).
+
+### TTP-Based Queries [1,2]
+
+# 4. Search for Helpdesk/IT Support Spoofing in Display Names and Domains
+index=email (sender_name="*Helpdesk*" OR sender_name="*IT Support*" OR sender_name="*Tech Support*" OR sender_name="*Service Desk*"
+OR sender_domain="*helpdesk*" OR sender_domain="*itsupport*" OR sender_domain="*servicedesk*")
+| search NOT sender_domain="yourcompany.com"
+| table _time, sender_email, sender_name, sender_domain, subject
+Purpose: Detect IT Helpdesk or Support impersonation attempts in email display names or sender domains used in callback phishing lures.
+
+# 5. Search for Emails Containing Phishing Keywords in Domains
+index=email
+| search sender_domain="*support*" OR sender_domain="*invoice*" OR sender_domain="*renewal*" OR sender_domain="*charges*" OR sender_domain="*paymentsupport*"
+| table _time, sender_email, sender_domain, subject
+Purpose: Detect likely phishing attempts using domain keyword patterns SRG favors.
+
+# References
+[1] https://www.halcyon.ai/blog/fbi-alerts-on-silent-ransom-group-targeting-law-firms  
+[2] https://www.cisa.gov/news-events/cybersecurity-advisories/aa25-071a  
+[3] https://www.tanium.com/blog/cti-roundup-luna-moth-venom-spider-stealc-v2/
