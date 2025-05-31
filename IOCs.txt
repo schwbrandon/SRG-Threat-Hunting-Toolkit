@@ -1,0 +1,46 @@
+## SRG IOCs
+
+# Remote Access Tool Executables [1,3]
+AnyDesk.exe
+ZohoAssist*.exe
+Splashtop*.exe
+Syncro.exe
+AteraAgent.exe
+SuperOps.exe
+
+# Data Exfiltration Tools [2]
+WinSCP.exe
+rclone.exe
+
+# Phishing Domains Observed in 2025 [1]
+masterclasssupport[.]com
+duolingoinvoice[.]com
+myannualrenewal[.]com
+usercharges[.]com
+userpaymentsupport[.]com
+
+# Common Phishing Sender Name Keywords [1]
+Helpdesk
+IT Support
+Tech Support
+Service Desk
+
+# Common Phishing Domain Patterns [1]
+*helpdesk*
+*itsupport*
+*servicedesk*
+*support*
+*invoice*
+*renewal*
+*charges*
+*paymentsupport*
+
+# Hosting Providers Used for Exfiltration Infrastructure [2]
+Hostwinds
+DigitalOcean
+Linode
+
+# References
+[1] https://www.halcyon.ai/blog/fbi-alerts-on-silent-ransom-group-targeting-law-firms  
+[2] https://www.cisa.gov/news-events/cybersecurity-advisories/aa25-071a  
+[3] https://www.tanium.com/blog/cti-roundup-luna-moth-venom-spider-stealc-v2/
